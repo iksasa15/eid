@@ -5,6 +5,7 @@ const previewContainer = document.getElementById('previewContainer');
 const imageCanvas = document.getElementById('imageCanvas');
 const ctx = imageCanvas.getContext('2d');
 const loadingElement = document.getElementById('loading');
+const greetingText = document.getElementById('greeting-text');
 
 // متغيرات للتحكم في عملية التنزيل
 let downloadTriggered = false;
@@ -14,6 +15,28 @@ let loadedImage = null;
 // متغيرات للضغط الطويل على الصورة
 let longPressTimer = null;
 let isLongPress = false;
+
+// النص الذي سيتم عرضه مع تأثير الكتابة
+const textToType = "يسعدنا في جمعية التنمية الأهلية بتبوك -- شَيِم، أن نقدم لكم تهنئة خاصة بمناسبة عيد الأضحى المبارك، سائلين الله أن يتقبل طاعاتكم، ويجعل أيامكم أعياداً عامرة بالخيرات والمسرات والبركات. وكل عام وأنتم بخير.";
+
+// دالة لتنفيذ تأثير الكتابة
+function typeText(element, text, speed = 30, index = 0) {
+    if (index < text.length) {
+        element.textContent += text.charAt(index);
+        index++;
+        setTimeout(function() {
+            typeText(element, text, speed, index);
+        }, speed);
+    }
+}
+
+// بدء تأثير الكتابة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        greetingText.textContent = '';
+        typeText(greetingText, textToType);
+    }, 500);
+});
 
 // إضافة معالج الحدث للزر "عرض"
 showButton.addEventListener('click', generateImage);
