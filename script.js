@@ -11,6 +11,10 @@ let downloadTriggered = false;
 let imageLoaded = false;
 let loadedImage = null;
 
+// متغيرات للضغط الطويل على الصورة
+let longPressTimer = null;
+let isLongPress = false;
+
 // إضافة معالج الحدث للزر "عرض"
 showButton.addEventListener('click', generateImage);
 
@@ -21,6 +25,42 @@ usernameInput.addEventListener('keypress', function (event) {
         generateImage();
     }
 });
+
+// إضافة معالجات أحداث الضغط الطويل على الصورة
+imageCanvas.addEventListener('mousedown', startLongPress);
+imageCanvas.addEventListener('touchstart', startLongPress);
+imageCanvas.addEventListener('mouseup', endLongPress);
+imageCanvas.addEventListener('touchend', endLongPress);
+imageCanvas.addEventListener('mouseleave', cancelLongPress);
+imageCanvas.addEventListener('touchcancel', cancelLongPress);
+
+// دالة لبدء تحديد الضغط الطويل
+function startLongPress(e) {
+    if (e.type === 'touchstart') {
+        e.preventDefault(); // منع السلوك الافتراضي للمس
+    }
+    isLongPress = false;
+    longPressTimer = setTimeout(() => {
+        isLongPress = true;
+        downloadImage();
+        // إضافة تأثير بصري ليعرف المستخدم أن الصورة تم حفظها
+        const originalStyle = imageCanvas.style.filter;
+        imageCanvas.style.filter = 'brightness(1.2)';
+        setTimeout(() => {
+            imageCanvas.style.filter = originalStyle;
+        }, 300);
+    }, 800); // تحديد الضغط الطويل بعد 800 مللي ثانية
+}
+
+// دالة لإنهاء الضغط الطويل
+function endLongPress() {
+    clearTimeout(longPressTimer);
+}
+
+// دالة لإلغاء الضغط الطويل
+function cancelLongPress() {
+    clearTimeout(longPressTimer);
+}
 
 // دالة لتوليد الصورة المخصصة
 function generateImage() {
